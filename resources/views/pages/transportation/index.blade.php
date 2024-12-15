@@ -1,52 +1,113 @@
 @extends('layouts.app')
-@section('title', 'Transportasi')
+@section('title', 'BusJet - Transportation')
+
 @section('content')
     <main class="w-full">
-        <div class="flex justify-between">
-            <h1 class="font-bold text-3xl">Transportasi</h1>
-            <div class="flex">
-                <form action="" method="GET">
-                    <input type="text" class="me-5 rounded-lg  border-gray-200" name="search" placeholder="Search" value="{{ request('search') }}">
-                </form>
-                <button onclick="location.href='{{ route('transportations.create') }}'" class="bg-blue-500 p-2 rounded text-white flex"><svg class="pe-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;"><path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z"></path></svg>Add Transportation</button></div>
-        </div>
-        <table class="mt-4 table-auto bg-white shadow rounded text-sm w-full">
-            <thead class="bg-blue-500">
-                <tr>
-                    <th scope="col" class="text-white p-3 ps-6 rounded-tl text-left">No</th>
-                    <th scope="col" class="text-white p-3 text-left ">Nama</th>
-                    <th scope="col" class="text-white p-3 text-left ">Lokasi</th>
-                    <th scope="col" class="text-white p-3 text-left">Tipe</th>
-                    <th scope="col" class="text-white p-3 text-left">Perusahaan</th>
-                    <th scope="col" style="width: 15%" class="text-white p-3 rounded-tr text-left">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($transportations as $transportation)
-                    <tr class="border-b">
-                        <td class="ps-6 *:p-3">{{ $loop->iteration }}</td>
-                        <td class="p-3">{{ $transportation->name }}</td>
-                        <td class="p-3">{{ $transportation->location->city ?? 'Unknown' }}, {{ $transportation->location->province ?? 'Unknown' }}</td>
-                        <td class="p-3">{{ $transportation->type }}</td>
-                        <td class="p-3">{{ $transportation->provider }}</td>
-                        <td class="p-3">
-                            <form onsubmit="return confirm('Apakah Anda Yakin ?');" action="{{ route('transportations.destroy', $transportation->id) }}" method="POST" class="my-3">
-                                <a href="{{ route('transportations.edit', $transportation->id) }}" class="bg-amber-500 rounded px-3 py-2 me-3 text-white">Ubah</a>
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="bg-red-600 rounded px-3 py-2 me-3 text-white">Hapus</button>
-                            </form>
-                        </td>
-                    </tr>
-                @empty
-                <div class="bg-gray-400 text-white rounded px-3 py-2 mt-3">
-                    Data Destinasi belum Tersedia.
+        <x-breadcrumb homeLink="transportations" homeTitle="Transportation" currentLink="#" currentTitle="List" />
+        <x-page-header title="transportations" buttonText="Add Transportation" :buttonAvailable="true" />
+
+        <div class="p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+            <!-- Search bar section -->
+            <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 mb-6">
+                <div class="w-full md:w-1/2">
+                    <form class="flex items-center">
+                        <div class="relative w-full">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewbox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <input type="text" name="search" value="{{ request('search') }}"
+                                class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                placeholder="Search transportation...">
+                        </div>
+                    </form>
                 </div>
-                @endforelse
-            </tbody>
-        </table>
-        {{-- {{ $transportation->links('components.pagination-table') }} --}}
+            </div>
+
+            <!-- Table section -->
+            <div class="overflow-x-auto rounded-lg">
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 mb-4">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-4 py-3">No</th>
+                            <th scope="col" class="px-4 py-3">Name</th>
+                            <th scope="col" class="px-4 py-3">Location</th>
+                            <th scope="col" class="px-4 py-3">Type</th>
+                            <th scope="col" class="px-4 py-3">Provider</th>
+                            <th scope="col" class="px-4 py-3"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($transportations as $transportation)
+                            <tr class="border-b dark:border-gray-700">
+                                <td class="px-4 py-3">{{ $loop->iteration }}</td>
+                                <td class="px-4 py-3 font-medium">{{ $transportation->name }}</td>
+                                <td class="px-4 py-3">{{ $transportation->location->city ?? 'Unknown' }}, {{ $transportation->location->province ?? 'Unknown' }}</td>
+                                <td class="px-4 py-3">{{ $transportation->type }}</td>
+                                <td class="px-4 py-3">{{ $transportation->provider }}</td>
+                                <td class="px-4 py-3 flex items-center justify-end">
+                                    <button id="dropdown-button-{{ $transportation->id }}"
+                                        data-dropdown-toggle="dropdown-{{ $transportation->id }}"
+                                        class="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100"
+                                        type="button">
+                                        <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                                        </svg>
+                                    </button>
+                                    <div id="dropdown-{{ $transportation->id }}"
+                                        class="hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
+                                        <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
+                                            aria-labelledby="dropdown-button-{{ $transportation->id }}">
+                                            <li>
+                                                <a href="{{ route('transportations.edit', $transportation->id) }}"
+                                                    class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
+                                            </li>
+                                        </ul>
+                                        <div class="py-1">
+                                            <form action="{{ route('transportations.destroy', $transportation->id) }}" method="POST"
+                                                onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="block w-full text-left py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="px-4 py-3 text-center text-gray-500">
+                                    No transportation available
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            @if ($transportations instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                <div class="mt-4">
+                    {{ $transportations->links() }}
+                </div>
+            @endif
+        </div>
     </main>
+
+    <script>
+        document.querySelectorAll('[id^="dropdown-button-"]').forEach(button => {
+            button.addEventListener('click', () => {
+                const menu = button.nextElementSibling;
+                menu.classList.toggle('hidden');
+            });
+        });
+    </script>
 @endsection
 
 

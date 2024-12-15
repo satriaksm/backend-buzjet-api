@@ -1,73 +1,100 @@
 @extends('layouts.app')
-@section('title', 'Tambah Destinasi')
+@section('title', 'Create Destination')
+
 @section('content')
-<main class="w-full">
-    <h1 class="font-bold text-3xl">Buat Destinasi</h1>
-                <div class="bg-white shadow-sm rounded-xl mt-4">
-                        <form action="{{ route('destinations.store') }}" method="POST" enctype="multipart/form-data" class="" autocomplete="off">
-                            <div class="grid grid-cols-6 ">
-                                @csrf
-                                <div class="px-5 pt-5 col-span-6">
-                                    <label class="font-weight-bold" for="name">Nama Destinasi</label> <br>
-                                    <input type="text" class="w-full border-gray-400 rounded @error('title') is-invalid @enderror" name="name" id="name" value="" placeholder="Masukkan Nama Destinasi">
+    <main class="w-full">
+        <x-breadcrumb homeLink="destinations" homeTitle="Destinations" currentLink="#" currentTitle="Create" />
+        <x-page-header title="destinations" buttonText="New Destination" :buttonAvailable=false />
 
-                                    <!-- error message untuk title -->
-                                    @error('name')
-                                        <div class="alert alert-danger mt-2">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-
-                                <div class="px-5 pt-5 col-span-6">
-                                    <label class="font-weight-bold" for="location_id">Lokasi</label> <br>
-                                    <select name="location_id" id="location_id" class="form-control">
-                                        <option value="">Pilih Lokasi</option>
-                                        @foreach ($locations as $location)
-                                            <option value="{{ $location->id }}">{{ $location->city }},  {{ $location->province }}</option>
-                                        @endforeach
-                                    </select>
-
-                                    <!-- error message untuk location_id -->
-                                    @error('location_id')
-                                        <div class="alert alert-danger mt-2">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-
-
-                                <div class="px-5 pt-5 col-span-6">
-                                    <label class="font-weight-bold" for="description">Deskripsi</label> <br>
-                                    <textarea class="w-full border-gray-400 rounded @error('description') is-invalid @enderror" name="description" id="description" rows="5" placeholder="Masukkan Description Destinasi"></textarea>
-
-                                    <!-- error message untuk description -->
-                                    @error('description')
-                                        <div class="alert alert-danger mt-2">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-
-
-                                <div class="px-5 pt-5 col-span-3  ">
-                                    <label class="font-weight-bold">Image</label>
-                                    <input type="file" class="w-full border-gray-400 rounded @error('img') is-invalid @enderror" name="img">
-
-                                    <!-- error message untuk img -->
-                                    @error('img')
-                                        <div class="alert alert-danger mt-2">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="px-5 pt-5 col-span-6 flex justify-end">
-                                <button type="submit" class="bg-blue-500 px-3 py-2 rounded me-3 mb-3 text-white w-full">Save</button>
-                                <button type="reset" class="bg-gray-400 px-3 py-2 rounded mb-3 text-white w-full">Reset</button>
-                            </div>
-                        </form>
+        <div class="p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+            <form method="POST" action="{{ route('destinations.store') }}" enctype="multipart/form-data">
+                @csrf
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                    <div>
+                        <label for="name"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Destination Name</label>
+                        <input type="text" id="name" name="name"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            required />
+                        @error('name')
+                            <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
+                        @enderror
                     </div>
-</main>
+                    <div>
+                        <label for="location_id"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Location</label>
+                        <select id="location_id" name="location_id"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 select2"
+                            required>
+                            <option value="">Select Location</option>
+                            @foreach ($locations as $location)
+                                <option value="{{ $location->id }}">{{ $location->city }}, {{ $location->province }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('location_id')
+                            <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="mb-5">
+                    <label for="description"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+                    <textarea id="description" name="description" rows="10"
+                        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
+                    @error('description')
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="mb-5">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="img">Upload
+                        Image</label>
+                    <input
+                        class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                        id="dropzone-file" type="file" name="img" required onchange="previewImage(event)">
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-300">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
+                    @error('img')
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div id="image-preview" class="mb-5"></div>
+
+                <button type="submit"
+                    class="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 dark:focus:ring-yellow-900">
+                    Create
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        function previewImage(event) {
+            var input = event.target;
+            var preview = document.getElementById('image-preview');
+            preview.innerHTML = '';
+
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'h-64 object-contain rounded-lg';
+                    preview.appendChild(img);
+
+                    var fileName = document.createElement('p');
+                    fileName.textContent = input.files[0].name;
+                    fileName.className = 'text-sm text-gray-500 dark:text-gray-400 mt-2';
+                    preview.appendChild(fileName);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            $('.select2').select2();
+        });
+    </script>
 @endsection
