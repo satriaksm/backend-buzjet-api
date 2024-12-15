@@ -10,7 +10,7 @@ class DestinationController extends Controller
 {
     public function index()
     {
-        $destinations = Destination::all();
+        $destinations = Destination::latest()->paginate(10);
         return view('pages.destination.index', compact('destinations'));
     }
 

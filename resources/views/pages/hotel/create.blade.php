@@ -1,63 +1,72 @@
 @extends('layouts.app')
-@section('title', 'Tambah Hotel')
+@section('title', 'Create Hotel')
+
 @section('content')
-<main class="w-full">
-    <h1 class="font-bold text-3xl">Tambah Hotel</h1>
-    <div class="bg-white shadow-sm rounded-xl mt-4">
-        <form action="{{ route('hotels.store') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
-            @csrf
-            <div class="grid grid-cols-6 px-5 pt-5">
-                <!-- Nama Hotel -->
-                <div class="px-5 pt-5 col-span-6">
-                    <label class="font-weight-bold" for="name">Nama Hotel</label>
-                    <input type="text" class="w-full border-gray-400 rounded @error('name') is-invalid @enderror" name="name" id="name" value="{{ old('name') }}" placeholder="Masukkan Nama Hotel">
-                    @error('name')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
+    <main class="w-full">
+        <x-breadcrumb homeLink="hotels" homeTitle="Hotels" currentLink="#" currentTitle="Create" />
+        <x-page-header title="hotels" buttonText="New Hotel" :buttonAvailable=false />
+
+        <div class="p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+            <form method="POST" action="{{ route('hotels.store') }}" enctype="multipart/form-data">
+                @csrf
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                    <div>
+                        <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Hotel Name</label>
+                        <input type="text" id="name" name="name"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            required />
+                        @error('name')
+                            <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="location_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Location</label>
+                        <select id="location_id" name="location_id"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 select2"
+                            required>
+                            <option value="">Select Location</option>
+                            @foreach ($locations as $location)
+                                <option value="{{ $location->id }}">{{ $location->city }}, {{ $location->province }}</option>
+                            @endforeach
+                        </select>
+                        @error('location_id')
+                            <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
 
-                <!-- Destinasi -->
-                <div class="px-5 pt-5 col-span-6">
-                    <label class="font-weight-bold" for="location_id">Lokasi</label>
-                    <select name="location_id" id="location_id" class="w-full border-gray-400 rounded @error('location_id') is-invalid @enderror">
-                        <option value="">Pilih Lokasi</option>
-                        @foreach ($locations as $location)
-                            <option value="{{ $location->id }}" {{ old('location_id') == $location->id ? 'selected' : '' }}>
-                                {{ $location->city }}, {{ $location->province }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('location_id')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                    <div>
+                        <label for="price_per_night" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Price per Night</label>
+                        <input type="number" id="price_per_night" name="price_per_night"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            required />
+                        @error('price_per_night')
+                            <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="rating" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rating</label>
+                        <input type="number" step="0.1" min="0" max="5" id="rating" name="rating"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            required />
+                        @error('rating')
+                            <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
 
+                <button type="submit"
+                    class="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 dark:focus:ring-yellow-900">
+                    Create
+                </button>
+            </form>
+        </div>
+    </main>
 
-                <!-- Harga per Malam -->
-                <div class="px-5 pt-5 col-span-6">
-                    <label class="font-weight-bold" for="price_per_night">Harga per Malam</label>
-                    <input type="number" class="w-full border-gray-400 rounded @error('price_per_night') is-invalid @enderror" name="price_per_night" id="price_per_night" value="{{ old('price_per_night') }}" placeholder="Masukkan Harga per Malam">
-                    @error('price_per_night')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <!-- Rating -->
-                <div class="px-5 pt-5 col-span-6">
-                    <label class="font-weight-bold" for="rating">Rating</label>
-                    <input type="number" step="0.1" min="0" max="5" class="w-full border-gray-400 rounded @error('rating') is-invalid @enderror" name="rating" id="rating" value="{{ old('rating') }}" placeholder="Masukkan Rating (0 - 5)">
-                    @error('rating')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <!-- Tombol Aksi -->
-                <div class="px-5 pt-5 col-span-6 flex justify-end">
-                    <button type="submit" class="bg-blue-500 px-3 py-2 rounded me-3 mb-3 text-white w-full">Save</button>
-                    <button type="reset" class="bg-gray-400 px-3 py-2 rounded mb-3 text-white w-full">Reset</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</main>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            $('.select2').select2();
+        });
+    </script>
 @endsection
