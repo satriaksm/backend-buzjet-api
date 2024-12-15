@@ -1,5 +1,6 @@
 @extends('layouts.app')
-@section('title', 'Buat Paket')
+@section('title', 'Create Package')
+
 @section('content')
 <main class="w-full" x-data="{
     destinations: [
@@ -50,178 +51,152 @@
         this.destinations = this.destinations.filter((_, i) => i !== index);
     }
 }">
-    <h1 class="font-bold text-3xl">Buat Paket</h1>
-    <div class="bg-white shadow-sm rounded-xl mt-4">
-        <form action="{{ route('packages.store') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+    <x-breadcrumb homeLink="packages" homeTitle="Packages" currentLink="#" currentTitle="Create" />
+    <x-page-header title="packages" buttonText="New Package" :buttonAvailable=false />
+
+    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+        <form action="{{ route('packages.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
-            <div class="grid grid-cols-12 gap-4">
-                <!-- Nama Paket -->
-                <div class="px-5 pt-5 col-span-12">
-                    <label class="font-weight-bold" for="name">Nama Paket</label>
-                    <input type="text"
-                           class="w-full border-gray-400 rounded @error('name') is-invalid @enderror"
-                           name="name"
-                           value="{{ old('name') }}"
-                           placeholder="Masukkan Nama paket">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                <div>
+                    <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Package Name</label>
+                    <input type="text" id="name" name="name"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        value="{{ old('name') }}" required />
                     @error('name')
-                        <div class="text-red-500 mt-2">{{ $message }}</div>
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <!-- Deskripsi -->
-                <div class="px-5 pt-5 col-span-12">
-                    <label class="font-weight-bold" for="description">Deskripsi Paket</label>
-                    <textarea 
-                           class="w-full border-gray-400 rounded @error('description') is-invalid @enderror"
-                           name="description"
-                           rows="4"
-                           placeholder="Masukkan deskripsi paket">{{ old('description') }}</textarea>
-                    @error('description')
-                        <div class="text-red-500 mt-2">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <!-- Harga -->
-                <div class="px-5 pt-5 col-span-6">
-                    <label class="font-weight-bold" for="price">Harga</label>
-                    <input type="number"
-                           class="w-full border-gray-400 rounded @error('price') is-invalid @enderror"
-                           name="price"
-                           value="{{ old('price') }}"
-                           placeholder="Masukkan harga paket">
+                <div>
+                    <label for="price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Price</label>
+                    <input type="number" id="price" name="price"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        value="{{ old('price') }}" required />
                     @error('price')
-                        <div class="text-red-500 mt-2">{{ $message }}</div>
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
                     @enderror
-                </div>
-
-                <!-- Durasi -->
-                <div class="px-5 pt-5 col-span-6">
-                    <label class="font-weight-bold" for="duration">Durasi (Hari)</label>
-                    <input type="number"
-                           class="w-full border-gray-400 rounded @error('duration') is-invalid @enderror"
-                           name="duration"
-                           value="{{ old('duration') }}"
-                           placeholder="Masukkan durasi paket">
-                    @error('duration')
-                        <div class="text-red-500 mt-2">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <!-- Malam -->
-                <div class="px-5 pt-5 col-span-6">
-                    <label class="font-weight-bold" for="night">Malam</label>
-                    <input type="number"
-                           class="w-full border-gray-400 rounded @error('night') is-invalid @enderror"
-                           name="night"
-                           value="{{ old('night') }}"
-                           placeholder="Masukkan jumlah malam">
-                    @error('night')
-                        <div class="text-red-500 mt-2">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <!-- Kapasitas -->
-                <div class="px-5 pt-5 col-span-6">
-                    <label class="font-weight-bold" for="capacity">Kapasitas</label>
-                    <input type="number"
-                           class="w-full border-gray-400 rounded @error('capacity') is-invalid @enderror"
-                           name="capacity"
-                           value="{{ old('capacity') }}"
-                           placeholder="Masukkan kapasitas paket">
-                    @error('capacity')
-                        <div class="text-red-500 mt-2">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <!-- Destinasi Section -->
-                <div class="px-5 pt-5 col-span-12">
-                    <div class="flex justify-between items-center mb-4">
-                        <label class="font-weight-bold text-lg">Destinasi</label>
-                        <button type="button"
-                                class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-                                @click="addDestination">
-                            + Tambah Destinasi
-                        </button>
-                    </div>
-
-                    <template x-for="(dest, index) in destinations" :key="index">
-                        <div class="border rounded-lg p-4 mb-4 bg-gray-50">
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <!-- Destinasi Select -->
-                                <div>
-                                    <label class="font-weight-bold">
-                                        Destinasi <span x-text="index + 1"></span>
-                                    </label>
-                                    <select :name="'destinations['+index+'][destination_id]'"
-                                            x-model="dest.destination_id"
-                                            @change="getHotelsAndTransportations($event.target.value, index)"
-                                            class="w-full border-gray-400 rounded">
-                                        <option value="">Pilih Destinasi</option>
-                                        @foreach ($destinations as $destination)
-                                            <option value="{{ $destination->id }}">
-                                                {{ $destination->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-                                <!-- Hotel Select -->
-                                <div>
-                                    <label class="font-weight-bold">
-                                        Hotel untuk Destinasi <span x-text="index + 1"></span>
-                                    </label>
-                                    <select :name="'destinations['+index+'][hotel_id]'"
-                                            x-model="dest.hotel_id"
-                                            class="w-full border-gray-400 rounded">
-                                        <option value="">
-                                            <span x-text="dest.destination_id ? 'Pilih Hotel' : 'Pilih Destinasi dulu'"></span>
-                                        </option>
-                                        <template x-for="hotel in dest.hotels" :key="hotel.id">
-                                            <option :value="hotel.id" x-text="hotel.name + ' (' + hotel.price_per_night + '/malam)'"></option>
-                                        </template>
-                                    </select>
-                                </div>
-
-                                <!-- Transportation Select -->
-                                <div>
-                                    <label class="font-weight-bold">
-                                        Transportasi untuk Destinasi <span x-text="index + 1"></span>
-                                    </label>
-                                    <select :name="'destinations['+index+'][transportation_id]'"
-                                            x-model="dest.transportation_id"
-                                            class="w-full border-gray-400 rounded">
-                                        <option value="">
-                                            <span x-text="dest.destination_id ? 'Pilih Transportasi' : 'Pilih Destinasi dulu'"></span>
-                                        </option>
-                                        <template x-for="transport in dest.transportations" :key="transport.id">
-                                            <option :value="transport.id" x-text="transport.type + ' - ' + transport.name + ' (' + transport.provider + ')'"></option>
-                                        </template>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Remove Button -->
-                            <template x-if="destinations.length > 1">
-                                <button type="button"
-                                        class="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                                        @click="removeDestination(index)">
-                                    Hapus Destinasi
-                                </button>
-                            </template>
-                        </div>
-                    </template>
-                </div>
-
-                <!-- Submit Buttons -->
-                <div class="px-5 pt-5 col-span-12 grid grid-cols-2 gap-4 mb-5">
-                    <button type="submit" class="bg-blue-500 px-3 py-2 rounded text-white">
-                        Simpan
-                    </button>
-                    <button type="reset" class="bg-gray-400 px-3 py-2 rounded text-white">
-                        Reset
-                    </button>
                 </div>
             </div>
+
+            <div class="mb-5">
+                <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+                <textarea id="description" name="description" rows="4"
+                    class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">{{ old('description') }}</textarea>
+                @error('description')
+                    <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+                <div>
+                    <label for="duration" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Duration (Days)</label>
+                    <input type="number" id="duration" name="duration"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        value="{{ old('duration') }}" required />
+                    @error('duration')
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="night" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nights</label>
+                    <input type="number" id="night" name="night"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        value="{{ old('night') }}" required />
+                    @error('night')
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="capacity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Capacity</label>
+                    <input type="number" id="capacity" name="capacity"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        value="{{ old('capacity') }}" required />
+                    @error('capacity')
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            <!-- Destinations Section -->
+            <div class="mb-5">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">Destinations</h3>
+                    <button type="button"
+                        class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800"
+                        @click="addDestination">
+                        + Add Destination
+                    </button>
+                </div>
+
+                <template x-for="(dest, index) in destinations" :key="index">
+                    <div class="p-4 mb-4 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    Destination <span x-text="index + 1"></span>
+                                </label>
+                                <select :name="'destinations['+index+'][destination_id]'"
+                                    x-model="dest.destination_id"
+                                    @change="getHotelsAndTransportations($event.target.value, index)"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    <option value="">Select Destination</option>
+                                    @foreach ($destinations as $destination)
+                                        <option value="{{ $destination->id }}">{{ $destination->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    Hotel for Destination <span x-text="index + 1"></span>
+                                </label>
+                                <select :name="'destinations['+index+'][hotel_id]'"
+                                    x-model="dest.hotel_id"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    <option value="">
+                                        <span x-text="dest.destination_id ? 'Select Hotel' : 'Select Destination first'"></span>
+                                    </option>
+                                    <template x-for="hotel in dest.hotels" :key="hotel.id">
+                                        <option :value="hotel.id" x-text="hotel.name + ' (' + hotel.price_per_night + '/night)'"></option>
+                                    </template>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    Transportation for Destination <span x-text="index + 1"></span>
+                                </label>
+                                <select :name="'destinations['+index+'][transportation_id]'"
+                                    x-model="dest.transportation_id"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    <option value="">
+                                        <span x-text="dest.destination_id ? 'Select Transportation' : 'Select Destination first'"></span>
+                                    </option>
+                                    <template x-for="transport in dest.transportations" :key="transport.id">
+                                        <option :value="transport.id" x-text="transport.type + ' - ' + transport.name + ' (' + transport.provider + ')'"></option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+
+                        <template x-if="destinations.length > 1">
+                            <button type="button"
+                                class="mt-4 text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"
+                                @click="removeDestination(index)">
+                                Remove Destination
+                            </button>
+                        </template>
+                    </div>
+                </template>
+            </div>
+
+            <button type="submit"
+                class="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 dark:focus:ring-yellow-900">
+                Create Package
+            </button>
         </form>
     </div>
 </main>
