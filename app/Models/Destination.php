@@ -20,5 +20,10 @@ class Destination extends Model
     {
         return $this->belongsToMany(Package::class, 'package_destinations');
     }
+
+    public function getImageUrlAttribute()
+    {
+        return asset("storage/images/" . $this->image);
+    }
 }
 

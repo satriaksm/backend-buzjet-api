@@ -9,6 +9,25 @@ use Illuminate\Support\Facades\Validator;
 
 class DestinationController extends Controller
 {
+    public function getDestinationImage($id)
+    {
+        // Ambil data destination dari database
+        $destination = Destination::find($id);
+
+        if (!$destination) {
+            return response()->json(['error' => 'Destination not found'], 404);
+        }
+
+        // Nama file gambar dari kolom database (misalnya 'image')
+        $imageName = $destination->img;
+
+        // URL lengkap gambar
+        $imageUrl = asset("storage/images/" . $imageName);
+
+        return response()->json([
+            'img' => $imageUrl,
+        ]);
+    }
     /**
      * Display a listing of the resource.
      */
