@@ -23,7 +23,7 @@ class Destination extends Model
 
     public function getImageUrlAttribute()
     {
-        return asset("storage/images/" . $this->image);
+        return asset("storage/destinations/" . $this->img);
     }
 }
 

@@ -4,29 +4,35 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Destination;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
 class DestinationController extends Controller
 {
-    public function getDestinationImage($id)
+    public function getImage($id)
     {
-        // Ambil data destination dari database
-        $destination = Destination::find($id);
+        $destination = Destination::findOrFail($id);
 
-        if (!$destination) {
-            return response()->json(['error' => 'Destination not found'], 404);
+        // Debug image filename
+        Log::info('Image filename: ' . $destination->img);
+
+        // Correct path construction
+        $path = public_path('storage/destinations/' . basename($destination->img));
+
+        // Debug full path
+        Log::info('Full path: ' . $path);
+
+        if (!file_exists($path)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Image not found',
+                'path' => $path,
+                'image_name' => $destination->img
+            ], 404);
         }
 
-        // Nama file gambar dari kolom database (misalnya 'image')
-        $imageName = $destination->img;
-
-        // URL lengkap gambar
-        $imageUrl = asset("storage/images/" . $imageName);
-
-        return response()->json([
-            'img' => $imageUrl,
-        ]);
+        return response()->file($path);
     }
     /**
      * Display a listing of the resource.

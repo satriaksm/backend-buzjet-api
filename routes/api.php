@@ -23,7 +23,7 @@ Route::middleware(['api', 'throttle:api'])->group(function () {
 
     Route::resource('/locations', LocationController::class);
     Route::resource('/destinations', DestinationController::class);
-    Route::get('/destinations/{id}/image', [DestinationController::class, 'getDestinationImage']);
+    Route::get('/destinations/{id}/image', [DestinationController::class, 'getImage']);
     Route::resource('/transportations', TransportationController::class);
     Route::resource('/hotels', HotelController::class);
     Route::resource('/packages', PackageController::class);

@@ -26,7 +26,7 @@ class DestinationController extends Controller
             'name' => 'required|string|max:255',
             'location_id' => 'required|exists:locations,id',
             'description' => 'required|string',
-            'img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi untuk gambar
+            'img' => 'nullable|image|mimes:jpeg,png,jpg,gif', // Validasi untuk gambar
         ]);
 
         $data = $request->all();
@@ -58,7 +58,7 @@ class DestinationController extends Controller
             'name' => 'required|string|max:255',
             'location_id' => 'required|exists:locations,id',
             'description' => 'required|string',
-            'img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi untuk gambar
+            'img' => 'nullable|image|mimes:jpeg,png,jpg,gif', // Validasi untuk gambar
         ]);
 
         $data = $request->all();
