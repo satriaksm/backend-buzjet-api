@@ -141,4 +141,12 @@ class PackageController extends Controller
             'message' => 'Data berhasil dihapus',
         ], 200);
     }
+
+    public function getTransportationsByDestination($destinationId)
+    {
+        $destination = \App\Models\Destination::with('location')->findOrFail($destinationId);
+        $transportations = \App\Models\Transportation::where('location_id', $destination->location_id)->get();
+
+        return response()->json($transportations);
+    }
 }
