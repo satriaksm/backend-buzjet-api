@@ -12,6 +12,7 @@
             transportations: []
         }
     ],
+
     async getHotelsAndTransportations(destinationId, index) {
         if (!destinationId) {
             this.destinations[index].hotels = [];
@@ -25,19 +26,18 @@
             const hotelsResponse = await fetch(`/api/hotels-by-destination/${destinationId}`);
             const hotels = await hotelsResponse.json();
             this.destinations[index].hotels = hotels;
-            this.destinations[index].hotel_id = '';
 
             // Fetch transportations for the selected destination's location
             const transportationsResponse = await fetch(`/api/transportations-by-destination/${destinationId}`);
             const transportations = await transportationsResponse.json();
             this.destinations[index].transportations = transportations;
-            this.destinations[index].transportation_id = '';
+            
+            console.log('Transportations:', transportations); // Add this for debugging
         } catch (error) {
-            console.error('Error:', error);
-            this.destinations[index].hotels = [];
-            this.destinations[index].transportations = [];
+            console.error('Error fetching hotels and transportations:', error);
         }
     },
+
     addDestination() {
         this.destinations.push({
             destination_id: '',
@@ -47,8 +47,9 @@
             transportations: []
         });
     },
+
     removeDestination(index) {
-        this.destinations = this.destinations.filter((_, i) => i !== index);
+        this.destinations.splice(index, 1);
     }
 }">
     <x-breadcrumb homeLink="packages" homeTitle="Packages" currentLink="#" currentTitle="Create" />

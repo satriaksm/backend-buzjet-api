@@ -18,8 +18,13 @@ Route::middleware(['api', 'throttle:api'])->group(function () {
 
         return response()->json($hotels);
     });
-    Route::get('/transportations-by-destination/{destinationId}', [PackageController::class, 'getTransportationsByDestination']);
 
+    // Remove or comment out duplicate routes
+    // Route::get('/transportations-by-destination/{destinationId}', [PackageController::class, 'getTransportationsByDestination']);
+    // Route::get('transportations-by-destination/{destination}', [TransportationController::class, 'getByDestination']);
+
+    // Add this single route
+    Route::get('/transportations-by-destination/{destinationId}', [PackageController::class, 'getTransportationsByDestination']);
 
     Route::resource('/locations', LocationController::class);
     Route::resource('/destinations', DestinationController::class);
@@ -27,5 +32,4 @@ Route::middleware(['api', 'throttle:api'])->group(function () {
     Route::resource('/transportations', TransportationController::class);
     Route::resource('/hotels', HotelController::class);
     Route::resource('/packages', PackageController::class);
-
 });

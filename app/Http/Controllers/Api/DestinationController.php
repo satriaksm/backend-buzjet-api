@@ -6,6 +6,7 @@ use App\Models\Destination;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class DestinationController extends Controller
@@ -18,7 +19,7 @@ class DestinationController extends Controller
         Log::info('Image filename: ' . $destination->img);
 
         // Correct path construction
-        $path = public_path('storage/destinations/' . basename($destination->img));
+        $path = public_path(basename($destination->img));
 
         // Debug full path
         Log::info('Full path: ' . $path);
@@ -56,7 +57,7 @@ class DestinationController extends Controller
             'name' => 'required|string|max:255',
             'location_id' => 'required|integer|exists:locations,id',
             'description' => 'required|string|max:1000',
-            'img' => 'required|url',
+            'img' => 'required|file|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -67,12 +68,37 @@ class DestinationController extends Controller
             ], 422);
         }
 
-        $destination = Destination::create($request->all());
-        return response()->json([
-            'status' => true,
-            'message' => 'Data berhasil ditambahkan',
-            'data' => $destination,
-        ], 201);
+        try {
+            // Handle file upload
+            if ($request->hasFile('img')) {
+                $file = $request->file('img');
+                $filename = time() . '_' . $file->getClientOriginalName();
+
+                // Store file directly to public directory
+                $file->move(public_path('storage/destinations'), $filename);
+
+                // Save only filename
+                $imgPath = $filename;
+            }
+
+            $destination = Destination::create([
+                'name' => $request->name,
+                'location_id' => $request->location_id,
+                'description' => $request->description,
+                'img' => $imgPath ?? null,
+            ]);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Data berhasil ditambahkan',
+                'data' => $destination,
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error uploading file: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -105,7 +131,7 @@ class DestinationController extends Controller
             'name' => 'nullable|string|max:255',
             'location_id' => 'nullable|integer|exists:locations,id',
             'description' => 'nullable|string|max:1000',
-            'img' => 'nullable|url',
+            'img' => 'nullable|file|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -116,25 +142,46 @@ class DestinationController extends Controller
             ], 422);
         }
 
-        $destination = Destination::find($id);
+        try {
+            $destination = Destination::find($id);
+            if (!$destination) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Data tidak ditemukan',
+                ], 404);
+            }
 
-        if (!$destination) {
+            $data = $request->only(['name', 'location_id', 'description']);
+
+            // Handle file upload
+            if ($request->hasFile('img')) {
+                $file = $request->file('img');
+                $filename = time() . '_' . $file->getClientOriginalName();
+
+                // Delete old image if exists
+                if ($destination->img && file_exists(public_path('storage/destinations/' . $destination->img))) {
+                    unlink(public_path('storage/destinations/' . $destination->img));
+                }
+
+                // Store new file directly to public directory
+                $file->move(public_path('storage/destinations'), $filename);
+                $data['img'] = $filename;
+            }
+
+            $destination->update($data);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Data berhasil diubah',
+                'data' => $destination->fresh(),
+            ]);
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'Data tidak ditemukan',
-            ], 404);
+                'message' => 'Error updating file: ' . $e->getMessage(),
+            ], 500);
         }
-
-        // Update hanya field yang dikirim
-        $destination->update($request->only(['name', 'location_id', 'description', 'img']));
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Data berhasil diubah',
-            'data' => $destination,
-        ]);
     }
-
 
     /**
      * Remove the specified resource from storage.

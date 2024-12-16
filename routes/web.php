@@ -9,6 +9,8 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\DestinationController;
 use App\Http\Controllers\TransportationController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\AdminController;
 
 // Root redirect to dashboard
 Route::get('/', function () {
@@ -25,6 +27,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/book-package', [BookingController::class, 'bookPackage'])->middleware('auth');
 });
 
 // Admin routes
@@ -34,7 +37,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('transportations', TransportationController::class);
     Route::resource('locations', LocationController::class);
     Route::resource('packages', PackageController::class);
+
+    Route::get('/bookings', [BookingController::class, 'showBookings']);
 });
+
 
 // Image handling route
 Route::get('/images/{folder}/{filename}', function ($folder, $filename) {
@@ -46,5 +52,6 @@ Route::get('/images/{folder}/{filename}', function ($folder, $filename) {
 
     return Response::file($path);
 });
+
 
 require __DIR__ . '/auth.php';
