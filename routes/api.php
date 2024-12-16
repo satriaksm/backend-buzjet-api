@@ -7,25 +7,30 @@ use App\Http\Controllers\Api\HotelController;
 use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\DestinationController;
 use App\Http\Controllers\Api\TransportationController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\UserController;
 
-Route::middleware(['api', 'throttle:api'])->group(function () {
-    // Route::get('/hotels-by-destination/{destinationId}', [PackageController::class, 'getHotelsByDestination']);
-    Route::get('/hotels-by-destination/{destinationId}', function ($destinationId) {
-        $destination = Destination::with('location')->findOrFail($destinationId);
+Route::middleware(['api'])->group(function () {
+    // Auth routes first
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
 
-        // Dapatkan hotels berdasarkan lokasi destinasi
-        $hotels = \App\Models\Hotel::where('location_id', $destination->location_id)->get();
+    // Protected routes
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/logout', [AuthController::class, 'logout']);
+        Route::get('/profile', [AuthController::class, 'profile']);
 
-        return response()->json($hotels);
+        // Other protected resources
+        Route::resource('/locations', LocationController::class);
+        Route::resource('/destinations', DestinationController::class);
+        Route::get('/destinations/{id}/image', [DestinationController::class, 'getImage']);
+        Route::resource('/transportations', TransportationController::class);
+        Route::resource('/hotels', HotelController::class);
+        Route::resource('/packages', PackageController::class);
+        Route::apiResource('users', UserController::class);
     });
+
+    // Public routes for fetching data
+    Route::get('/hotels-by-destination/{destinationId}', [PackageController::class, 'getHotelsByDestination']);
     Route::get('/transportations-by-destination/{destinationId}', [PackageController::class, 'getTransportationsByDestination']);
-
-
-    Route::resource('/locations', LocationController::class);
-    Route::resource('/destinations', DestinationController::class);
-    Route::get('/destinations/{id}/image', [DestinationController::class, 'getImage']);
-    Route::resource('/transportations', TransportationController::class);
-    Route::resource('/hotels', HotelController::class);
-    Route::resource('/packages', PackageController::class);
-
 });
