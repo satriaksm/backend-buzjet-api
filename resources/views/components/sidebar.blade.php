@@ -14,9 +14,9 @@
         <ul class="space-y-2">
             <li class="{{ Request::is('dashboard') ? 'mx-2 bg-blue-500 rounded-xl text-white' : 'mx-2 hover:bg-blue-500 hover:rounded-xl hover:text-white' }}">
                 <a href="/dashboard" class="flex items-center p-2 text-base font-medium {{ Request::is('dashboard') ? 'text-inherit' : 'text-gray-900 dark:text-white' }} group">
-                    <svg class='me-2' xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="24" height="24" viewBox="0 0 24 24" style="{{ Request::is('dashboard') ? 'fill: rgba(255, 255, 255, 1);transform: ;msFilter:;' : ';transform: ;msFilter:;' }}">
-                        <path d="M19 2H9c-1.103 0-2 .897-2 2v6H5c-1.103 0-2 .897-2 2v9a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V4c0-1.103-.897-2-2-2zM5 12h6v8H5v-8zm14 8h-6v-8c0-1.103-.897-2-2-2H9V4h10v16z"></path>
-                        <path d="M11 6h2v2h-2zm4 0h2v2h-2zm0 4.031h2V12h-2zM15 14h2v2h-2zm-8 .001h2v2H7z"></path>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-house me-2" >
+                        <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/>
+                        <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                     </svg>
                     Dashboard
                 </a>
