@@ -10,25 +10,30 @@ use App\Http\Controllers\Api\TransportationController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 
-// Public routes (no auth required)
+// Public routes
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
+    // Routes for all authenticated users
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [AuthController::class, 'profile']);
 
-    // Other protected resources
-    Route::resource('/locations', LocationController::class);
-    Route::resource('/destinations', DestinationController::class);
-    Route::get('/destinations/{id}/image', [DestinationController::class, 'getImage']);
-    Route::resource('/transportations', TransportationController::class);
-    Route::resource('/hotels', HotelController::class);
-    Route::resource('/packages', PackageController::class);
-    Route::apiResource('users', UserController::class);
+    // Routes only for viewing packages (both admin and regular users)
+    Route::get('/packages', [PackageController::class, 'index']);
+    Route::get('/packages/{id}', [PackageController::class, 'show']);
+
+    // Admin only routes
+    Route::middleware('admin')->group(function () {
+        Route::resource('/locations', LocationController::class);
+        Route::resource('/destinations', DestinationController::class);
+        Route::get('/destinations/{id}/image', [DestinationController::class, 'getImage']);
+        Route::resource('/transportations', TransportationController::class);
+        Route::resource('/hotels', HotelController::class);
+        // Package routes except index and show
+        Route::resource('/packages', PackageController::class)->except(['index', 'show']);
+        Route::apiResource('users', UserController::class);
+    });
 });
 
-// Public routes for fetching data
-Route::get('/hotels-by-destination/{destinationId}', [PackageController::class, 'getHotelsByDestination']);
-Route::get('/transportations-by-destination/{destinationId}', [PackageController::class, 'getTransportationsByDestination']);

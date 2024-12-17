@@ -34,17 +34,18 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password)
             ]);
 
-                
-    
+
+
 
             $token = $user->createToken('auth_token')->plainTextToken;
-            
+
             return response()->json([
                 'status' => true,
                 'message' => 'User registered successfully',
                 'data' => [
                     'user' => $user,
-                    'token' => $token
+                    'token_type' => 'Bearer',
+                    'access_token' => $token  // Pastikan nama field konsisten
                 ]
             ], 201);
         } catch (\Exception $e) {
@@ -86,14 +87,19 @@ class AuthController extends Controller
             'message' => 'Login successful',
             'data' => [
                 'user' => $user,
-                'token' => $token
+                'token_type' => 'Bearer',
+                'access_token' => $token  // Pastikan nama field konsisten
             ]
         ]);
     }
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        // Revoke all tokens...
+        $request->user()->tokens()->delete();
+
+        // Clear any session data
+        Auth::guard('web')->logout();
 
         return response()->json([
             'status' => true,
@@ -101,12 +107,13 @@ class AuthController extends Controller
         ]);
     }
 
+
     public function profile(Request $request)
     {
         return response()->json([
             'status' => true,
             'data' => [
-                'user' => $request->user()
+            'user' => $request->user()
             ]
         ]);
     }
