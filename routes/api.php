@@ -7,29 +7,33 @@ use App\Http\Controllers\Api\HotelController;
 use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\DestinationController;
 use App\Http\Controllers\Api\TransportationController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\UserController;
 
-Route::middleware(['api', 'throttle:api'])->group(function () {
-    // Route::get('/hotels-by-destination/{destinationId}', [PackageController::class, 'getHotelsByDestination']);
-    Route::get('/hotels-by-destination/{destinationId}', function ($destinationId) {
-        $destination = Destination::with('location')->findOrFail($destinationId);
+// Public routes
+Route::post('login', [AuthController::class, 'login']);
+Route::post('register', [AuthController::class, 'register']);
 
-        // Dapatkan hotels berdasarkan lokasi destinasi
-        $hotels = \App\Models\Hotel::where('location_id', $destination->location_id)->get();
+// Protected routes
+Route::middleware('auth:sanctum')->group(function () {
+    // Routes for all authenticated users
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/profile', [AuthController::class, 'profile']);
 
-        return response()->json($hotels);
+    // Routes only for viewing packages (both admin and regular users)
+    Route::get('/packages', [PackageController::class, 'index']);
+    Route::get('/packages/{id}', [PackageController::class, 'show']);
+
+    // Admin only routes
+    Route::middleware('admin')->group(function () {
+        Route::resource('/locations', LocationController::class);
+        Route::resource('/destinations', DestinationController::class);
+        Route::get('/destinations/{id}/image', [DestinationController::class, 'getImage']);
+        Route::resource('/transportations', TransportationController::class);
+        Route::resource('/hotels', HotelController::class);
+        // Package routes except index and show
+        Route::resource('/packages', PackageController::class)->except(['index', 'show']);
+        Route::apiResource('users', UserController::class);
     });
-
-    // Remove or comment out duplicate routes
-    // Route::get('/transportations-by-destination/{destinationId}', [PackageController::class, 'getTransportationsByDestination']);
-    // Route::get('transportations-by-destination/{destination}', [TransportationController::class, 'getByDestination']);
-
-    // Add this single route
-    Route::get('/transportations-by-destination/{destinationId}', [PackageController::class, 'getTransportationsByDestination']);
-
-    Route::resource('/locations', LocationController::class);
-    Route::resource('/destinations', DestinationController::class);
-    Route::get('/destinations/{id}/image', [DestinationController::class, 'getImage']);
-    Route::resource('/transportations', TransportationController::class);
-    Route::resource('/hotels', HotelController::class);
-    Route::resource('/packages', PackageController::class);
 });
+
