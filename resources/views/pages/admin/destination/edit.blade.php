@@ -65,7 +65,7 @@
 
                 <div id="image-preview" class="mb-5">
                     @if ($destination->img)
-                        <img src="{{ asset('storage/' . $destination->img) }}" alt="Current Image" class="h-64 object-contain rounded-lg">
+                        <img src="{{ asset('storage/destinations/' . $destination->img) }}" alt="Current Image" class="h-64 object-contain rounded-lg">
                         <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Current image</p>
                     @endif
                 </div>

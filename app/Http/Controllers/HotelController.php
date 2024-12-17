@@ -11,13 +11,13 @@ class HotelController extends Controller
     public function index()
     {
         $hotels = Hotel::all();
-        return view('pages.hotel.index', compact('hotels'));
+        return view('pages.admin.hotel.index', compact('hotels'));
     }
 
     public function create()
     {
         $locations = Location::all();
-        return view('pages.hotel.create', compact('locations'));
+        return view('pages.admin.hotel.create', compact('locations'));
     }
 
     public function store(Request $request)
@@ -36,7 +36,7 @@ class HotelController extends Controller
     public function edit(Hotel $hotel)
     {
         $locations = Location::all();
-        return view('pages.hotel.edit', compact('hotel', 'locations'));
+        return view('pages.admin.hotel.edit', compact('hotel', 'locations'));
     }
 
     public function update(Request $request, Hotel $hotel)

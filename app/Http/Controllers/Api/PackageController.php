@@ -11,7 +11,7 @@ class PackageController extends Controller
 {
     public function index()
     {
-        $packages = Package::with(['destinations', 'hotels', 'user'])->get();
+        $packages = Package::with(['destinations', 'hotels', 'transportations', 'user'])->get();
         return response()->json([
             'status' => true,
             'message' => 'Data berhasil ditemukan',
@@ -33,6 +33,8 @@ class PackageController extends Controller
             'destination_ids.*' => 'exists:destinations,id',
             'hotel_ids' => 'required|array',
             'hotel_ids.*' => 'exists:hotels,id',
+            'transportation_ids' => 'required|array',
+            'transportation_ids.*' => 'exists:transportations,id',
         ]);
 
         if ($validator->fails()) {
@@ -43,16 +45,17 @@ class PackageController extends Controller
             ], 422);
         }
 
-        $package = Package::create($request->except(['destination_ids', 'hotel_ids']));
+        $package = Package::create($request->except(['destination_ids', 'hotel_ids', 'transportation_ids']));
 
         // Sync relationships
         $package->destinations()->sync($request->destination_ids);
         $package->hotels()->sync($request->hotel_ids);
+        $package->transportations()->sync($request->transportation_ids);
 
         return response()->json([
             'status' => true,
             'message' => 'Data berhasil ditambahkan',
-            'data' => $package->load(['destinations', 'hotels', 'user']),
+            'data' => $package->load(['destinations', 'hotels', 'transportations', 'user']),
         ], 201);
     }
 
@@ -137,5 +140,13 @@ class PackageController extends Controller
             'status' => true,
             'message' => 'Data berhasil dihapus',
         ], 200);
+    }
+
+    public function getTransportationsByDestination($destinationId)
+    {
+        $destination = \App\Models\Destination::with('location')->findOrFail($destinationId);
+        $transportations = \App\Models\Transportation::where('location_id', $destination->location_id)->get();
+
+        return response()->json($transportations);
     }
 }

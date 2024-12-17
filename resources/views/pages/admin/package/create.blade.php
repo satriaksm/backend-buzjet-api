@@ -21,13 +21,17 @@
             return;
         }
         try {
+            // Fetch hotels for the selected destination's location
             const hotelsResponse = await fetch(`/api/hotels-by-destination/${destinationId}`);
-            const hotelsData = await hotelsResponse.json();
-            this.destinations[index].hotels = hotelsData.hotels || [];
+            const hotels = await hotelsResponse.json();
+            this.destinations[index].hotels = hotels;
+            this.destinations[index].hotel_id = '';
 
+            // Fetch transportations for the selected destination's location
             const transportationsResponse = await fetch(`/api/transportations-by-destination/${destinationId}`);
-            const transportationsData = await transportationsResponse.json();
-            this.destinations[index].transportations = transportationsData.transportations || [];
+            const transportations = await transportationsResponse.json();
+            this.destinations[index].transportations = transportations;
+            this.destinations[index].transportation_id = '';
         } catch (error) {
             console.error('Error:', error);
             this.destinations[index].hotels = [];
@@ -123,10 +127,7 @@
                     <button type="button"
                         class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800"
                         @click="addDestination">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-                        </svg>
-                        Add Destination
+                        + Add Destination
                     </button>
                 </div>
 

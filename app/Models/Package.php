@@ -9,7 +9,7 @@ class Package extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'price', 'duration','night', 'capacity', 'created_by'];
+    protected $fillable = ['name', 'description', 'price', 'duration', 'night', 'capacity', 'created_by'];
 
     public function destinations()
     {
@@ -30,5 +30,9 @@ class Package extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
-}
 
+    public function transportations()
+    {
+        return $this->belongsToMany(Transportation::class, 'package_transportations');
+    }
+}

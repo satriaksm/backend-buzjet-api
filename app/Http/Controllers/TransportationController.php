@@ -11,13 +11,13 @@ class TransportationController extends Controller
     public function index()
     {
         $transportations = Transportation::all();
-        return view('pages.transportation.index', compact('transportations'));
+        return view('pages.admin.transportation.index', compact('transportations'));
     }
 
     public function create()
     {
         $locations = Location::all();
-        return view('pages.transportation.create', compact('locations'));
+        return view('pages.admin.transportation.create', compact('locations'));
     }
 
     public function store(Request $request)
@@ -37,7 +37,7 @@ class TransportationController extends Controller
     public function edit(Transportation $transportation)
     {
         $locations = Location::all();
-        return view('pages.transportation.edit', compact('transportation', 'locations'));
+        return view('pages.admin.transportation.edit', compact('transportation', 'locations'));
     }
 
     public function update(Request $request, Transportation $transportation)

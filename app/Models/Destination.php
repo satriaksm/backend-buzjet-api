@@ -9,7 +9,7 @@ class Destination extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'location_id', 'description', 'img'];
+    protected $fillable = ['name', 'description', 'location_id', 'img'];
 
     public function location()
     {
@@ -23,7 +23,9 @@ class Destination extends Model
 
     public function getImageUrlAttribute()
     {
-        return asset("storage/destinations/" . $this->img);
+        if ($this->img) {
+            return asset('storage/destinations/' . $this->img);
+        }
+        return null;
     }
 }
-

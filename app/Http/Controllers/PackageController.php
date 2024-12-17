@@ -16,7 +16,7 @@ class PackageController extends Controller
     public function index()
     {
         $packages = Package::with('user')->get(); // Relasi user di-load
-        return view('pages.package.index', compact('packages'));
+        return view('pages.admin.package.index', compact('packages'));
     }
 
     public function create()
@@ -24,7 +24,7 @@ class PackageController extends Controller
         $admins = User::where('role', 'admin')->get();
         $destinations = Destination::all();
         $hotels = Hotel::all();
-        return view('pages.package.create', compact('admins', 'destinations', 'hotels'));
+        return view('pages.admin.package.create', compact('admins', 'destinations', 'hotels'));
     }
 
     public function store(Request $request)
@@ -78,7 +78,7 @@ class PackageController extends Controller
     {
         $admins = User::where('role', 'admin')->get();
         $destinations = Destination::all();
-        return view('pages.package.edit', compact('package', 'admins', 'destinations'));
+        return view('pages.admin.package.edit', compact('package', 'admins', 'destinations'));
     }
 
     public function update(Request $request, Package $package)

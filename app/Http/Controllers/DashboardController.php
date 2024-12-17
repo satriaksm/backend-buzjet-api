@@ -20,6 +20,6 @@ class DashboardController extends Controller
             'popularDestinations' => Destination::latest()->take(4)->get(),
         ];
 
-        return view('pages.dashboard.index', $data);
+        return view('pages.admin.dashboard.index', $data);
     }
 }

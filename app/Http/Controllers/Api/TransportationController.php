@@ -6,6 +6,7 @@ use App\Models\Transportation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Destination;
 
 class TransportationController extends Controller
 {
@@ -123,5 +124,13 @@ class TransportationController extends Controller
             'status' => true,
             'message' => 'Data berhasil dihapus',
         ], 200);
+    }
+
+    public function getByDestination($destinationId)
+    {
+        $destination = Destination::with('location')->findOrFail($destinationId);
+        $transportations = Transportation::where('location_id', $destination->location_id)->get();
+
+        return response()->json($transportations);
     }
 }

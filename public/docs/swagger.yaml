@@ -1,0 +1,627 @@
+swagger: "2.0"
+info:
+  version: "1.0"
+  title: Backend-Buzjet-API
+  contact: {}
+host: backend-buzjet-revamp.test
+basePath: /api
+securityDefinitions: {}
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /locations:
+    get:
+      summary: Index
+      tags:
+        - Location
+      operationId: Index
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+    post:
+      summary: Input
+      tags:
+        - Location
+      operationId: Input
+      deprecated: false
+      produces:
+        - application/json
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters:
+        - name: city
+          in: formData
+          required: true
+          type: string
+          description: ""
+        - name: province
+          in: formData
+          required: true
+          type: string
+          description: ""
+      responses:
+        "200":
+          description: ""
+          headers: {}
+  /locations/1:
+    get:
+      summary: Detail
+      tags:
+        - Location
+      operationId: Detail
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+  /locations/6:
+    put:
+      summary: Edit
+      tags:
+        - Location
+      operationId: Edit
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: city
+          in: query
+          required: true
+          type: string
+          description: ""
+        - name: province
+          in: query
+          required: true
+          type: string
+          description: ""
+      responses:
+        "200":
+          description: ""
+          headers: {}
+    delete:
+      summary: Delete
+      tags:
+        - Location
+      operationId: Delete
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+  /destinations:
+    get:
+      summary: index
+      tags:
+        - Destination
+      operationId: index
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+    post:
+      summary: Input
+      tags:
+        - Destination
+      operationId: PostInput
+      deprecated: false
+      produces:
+        - application/json
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: name
+          in: formData
+          required: true
+          type: string
+          description: ""
+        - name: location_id
+          in: formData
+          required: true
+          type: integer
+          format: int32
+          description: ""
+        - name: description
+          in: formData
+          required: true
+          type: string
+          description: ""
+        - name: img
+          in: formData
+          required: true
+          type: file
+          format: file
+          description: ""
+      responses:
+        "200":
+          description: ""
+          headers: {}
+  /destinations/1:
+    get:
+      summary: Detail
+      tags:
+        - Destination
+      operationId: GetDetail
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+  /destinations/5:
+    put:
+      summary: Edit
+      tags:
+        - Destination
+      operationId: PutEdit
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: name
+          in: query
+          required: true
+          type: string
+          description: ""
+        - name: description
+          in: query
+          required: true
+          type: string
+          description: ""
+      responses:
+        "200":
+          description: ""
+          headers: {}
+    delete:
+      summary: Delete
+      tags:
+        - Destination
+      operationId: Delete1
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+  /transportations:
+    get:
+      summary: index
+      tags:
+        - Transportation
+      operationId: Getindex
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+    post:
+      summary: Input
+      tags:
+        - Transportation
+      operationId: PostInput1
+      deprecated: false
+      produces:
+        - application/json
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters:
+        - name: name
+          in: formData
+          required: true
+          type: string
+          description: ""
+        - name: type
+          in: formData
+          required: true
+          type: string
+          description: ""
+        - name: price
+          in: formData
+          required: true
+          type: integer
+          format: int32
+          description: ""
+        - name: provider
+          in: formData
+          required: true
+          type: string
+          description: ""
+        - name: location_id
+          in: formData
+          required: true
+          type: integer
+          format: int32
+          description: ""
+      responses:
+        "200":
+          description: ""
+          headers: {}
+  /transportations/1:
+    get:
+      summary: Detail
+      tags:
+        - Transportation
+      operationId: GetDetail1
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+  /transportations/7:
+    put:
+      summary: Edit
+      tags:
+        - Transportation
+      operationId: PutEdit1
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: name
+          in: query
+          required: true
+          type: string
+          description: ""
+        - name: price
+          in: query
+          required: true
+          type: integer
+          format: int32
+          description: ""
+        - name: location_id
+          in: query
+          required: true
+          type: integer
+          format: int32
+          description: ""
+      responses:
+        "200":
+          description: ""
+          headers: {}
+    delete:
+      summary: Delete
+      tags:
+        - Transportation
+      operationId: Delete2
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+  /hotels:
+    get:
+      summary: index
+      tags:
+        - Hotel
+      operationId: Getindex1
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+    post:
+      summary: Input
+      tags:
+        - Hotel
+      operationId: PostInput2
+      deprecated: false
+      produces:
+        - application/json
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters:
+        - name: name
+          in: formData
+          required: true
+          type: string
+          description: ""
+        - name: location_id
+          in: formData
+          required: true
+          type: integer
+          format: int32
+          description: ""
+        - name: price_per_night
+          in: formData
+          required: true
+          type: integer
+          format: int32
+          description: ""
+        - name: rating
+          in: formData
+          required: true
+          type: integer
+          format: int32
+          description: ""
+      responses:
+        "200":
+          description: ""
+          headers: {}
+  /hotels/1:
+    get:
+      summary: Detail
+      tags:
+        - Hotel
+      operationId: GetDetail2
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+  /hotels/4:
+    put:
+      summary: Edit
+      tags:
+        - Hotel
+      operationId: PutEdit2
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: name
+          in: query
+          required: true
+          type: string
+          description: ""
+        - name: price_per_night
+          in: query
+          required: true
+          type: integer
+          format: int32
+          description: ""
+      responses:
+        "200":
+          description: ""
+          headers: {}
+  /hotels/5:
+    delete:
+      summary: Delete
+      tags:
+        - Hotel
+      operationId: Delete3
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+  /packages:
+    get:
+      summary: index
+      tags:
+        - Package
+      operationId: Getindex2
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+    post:
+      summary: Input
+      tags:
+        - Package
+      operationId: PostInput3
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: Body
+          in: body
+          required: true
+          description: ""
+          schema:
+            $ref: "#/definitions/InputRequest"
+      responses:
+        "200":
+          description: ""
+          headers: {}
+  /packages/1:
+    get:
+      summary: Detail
+      tags:
+        - Package
+      operationId: GetDetail3
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+  /packages/3:
+    put:
+      summary: Edit
+      tags:
+        - Package
+      operationId: PutEdit3
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: Body
+          in: body
+          required: true
+          description: ""
+          schema:
+            $ref: "#/definitions/EditRequest"
+      responses:
+        "200":
+          description: ""
+          headers: {}
+    delete:
+      summary: Delete
+      tags:
+        - Package
+      operationId: Delete4
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+definitions:
+  InputRequest:
+    title: InputRequest
+    example:
+      name: Paket Wisata Bali
+      description: Liburan 3 hari di Bali
+      price: 2500000
+      duration: 3
+      night: 2
+      capacity: 4
+      created_by: 1
+      destination_ids:
+        - 1
+        - 2
+        - 3
+      hotel_ids:
+        - 1
+        - 2
+    type: object
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      price:
+        type: integer
+        format: int32
+      duration:
+        type: integer
+        format: int32
+      night:
+        type: integer
+        format: int32
+      capacity:
+        type: integer
+        format: int32
+      created_by:
+        type: integer
+        format: int32
+      destination_ids:
+        type: array
+        items:
+          type: integer
+          format: int32
+      hotel_ids:
+        type: array
+        items:
+          type: integer
+          format: int32
+    required:
+      - name
+      - description
+      - price
+      - duration
+      - night
+      - capacity
+      - created_by
+      - destination_ids
+      - hotel_ids
+  EditRequest:
+    title: EditRequest
+    example:
+      name: Paket Wisata Bali Updated
+      description: Liburan 4 hari di Bali
+      price: 3000000
+      duration: 4
+      night: 3
+      capacity: 6
+      created_by: 1
+      destination_ids:
+        - 1
+        - 2
+      hotel_ids:
+        - 1
+    type: object
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      price:
+        type: integer
+        format: int32
+      duration:
+        type: integer
+        format: int32
+      night:
+        type: integer
+        format: int32
+      capacity:
+        type: integer
+        format: int32
+      created_by:
+        type: integer
+        format: int32
+      destination_ids:
+        type: array
+        items:
+          type: integer
+          format: int32
+      hotel_ids:
+        type: array
+        items:
+          type: integer
+          format: int32
+    required:
+      - name
+      - description
+      - price
+      - duration
+      - night
+      - capacity
+      - created_by
+      - destination_ids
+      - hotel_ids
+tags:
+  - name: Location
+  - name: Destination
+  - name: Transportation
+  - name: Hotel
+  - name: Package

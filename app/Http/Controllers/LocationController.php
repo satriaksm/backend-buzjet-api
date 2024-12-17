@@ -10,12 +10,12 @@ class LocationController extends Controller
     public function index()
     {
         $locations = Location::all();
-        return view('pages.location.index', compact('locations'));
+        return view('pages.admin.location.index', compact('locations'));
     }
 
     public function create()
     {
-        return view('pages.location.create');
+        return view('pages.admin.location.create');
     }
 
     public function store(Request $request)
@@ -31,7 +31,7 @@ class LocationController extends Controller
 
     public function edit(Location $location)
     {
-        return view('pages.location.edit', compact('location'));
+        return view('pages.admin.location.edit', compact('location'));
     }
 
     public function update(Request $request, Location $location)
