@@ -12,13 +12,13 @@ class DestinationController extends Controller
     public function index()
     {
         $destinations = Destination::latest()->paginate(10);
-        return view('pages.destination.index', compact('destinations'));
+        return view('pages.admin.destination.index', compact('destinations'));
     }
 
     public function create()
     {
         $locations = Location::all();
-        return view('pages.destination.create', compact('locations'));
+        return view('pages.admin.destination.create', compact('locations'));
     }
 
     public function store(Request $request)
@@ -53,7 +53,7 @@ class DestinationController extends Controller
     public function edit(Destination $destination)
     {
         $locations = Location::all();
-        return view('pages.destination.edit', compact('destination', 'locations'));
+        return view('pages.admin.destination.edit', compact('destination', 'locations'));
     }
 
     public function update(Request $request, Destination $destination)

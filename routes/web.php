@@ -2,57 +2,84 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Response;
-use App\Http\Controllers\HotelController;
-use App\Http\Controllers\PackageController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\LocationController;
-use App\Http\Controllers\DestinationController;
-use App\Http\Controllers\TransportationController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\BookingController;
+use App\Http\Controllers\{
+    DashboardController,
+    ProfileController,
+    UserController,
+    BookingController,
+    DestinationController,
+    HotelController,
+    LocationController,
+    PackageController,
+    TransportationController
+};
 use Illuminate\Support\Facades\Auth;
 
-// Root redirect to dashboard (update this to check role first)
+// Home route with role-based redirect
 Route::get('/', function () {
-    if (Auth::user()->role === 'admin') {
-        return redirect()->route('dashboard.index');
+    if (Auth::check()) {
+        return Auth::user()->role === 'admin'
+            ? redirect()->route('dashboard.index')
+            : redirect()->route('user.index');
     }
-    return redirect()->route('home'); // You should create a home route for regular users
-})->middleware(['auth', 'verified']);
+    return redirect()->route('user.index');
+})->name('home');
 
-// Dashboard route with controller (add role:admin middleware)
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified', 'role:admin'])
-    ->name('dashboard.index');
+// Guest accessible routes
+Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
+    Route::get('/', [UserController::class, 'index'])->name('index');
+    Route::get('/packages', [UserController::class, 'packages'])->name('packages');
+    Route::get('/destinations', [UserController::class, 'destinations'])->name('destinations');
+});
 
-// Profile routes
+// Authenticated user routes
 Route::middleware(['auth'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::post('/book-package', [BookingController::class, 'bookPackage'])->middleware('auth');
+    // Profile routes
+    Route::controller(ProfileController::class)->group(function () {
+        Route::get('/profile', 'edit')->name('profile.edit');
+        Route::patch('/profile', 'update')->name('profile.update');
+        Route::delete('/profile', 'destroy')->name('profile.destroy');
+    });
+
+    // Booking routes for users
+    Route::controller(BookingController::class)->group(function () {
+        Route::post('/book-package', 'bookPackage')->name('book.package');
+        Route::post('/bookings', 'store')->name('user.bookings.store');
+    });
 });
 
 // Admin routes
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::resource('destinations', DestinationController::class);
-    Route::resource('hotels', HotelController::class);
-    Route::resource('transportations', TransportationController::class);
-    Route::resource('locations', LocationController::class);
-    Route::resource('packages', PackageController::class);
-    Route::get('/bookings', [BookingController::class, 'showBookings']);
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->middleware('verified')
+        ->name('dashboard.index');
+
+    // Resource routes for admin
+    Route::resources([
+        'destinations' => DestinationController::class,
+        'hotels' => HotelController::class,
+        'transportations' => TransportationController::class,
+        'locations' => LocationController::class,
+        'packages' => PackageController::class,
+    ]);
+
+    // Booking management routes (limited actions)
+    Route::resource('bookings', BookingController::class)->only([
+        'index',
+        'show',
+        'edit',
+        'update'
+    ]);
 });
 
 // Image handling route
 Route::get('/images/{folder}/{filename}', function ($folder, $filename) {
     $path = resource_path('images/' . $folder . '/' . $filename);
-
     if (!file_exists($path)) {
         abort(404);
     }
-
     return Response::file($path);
 });
-
 
 require __DIR__ . '/auth.php';

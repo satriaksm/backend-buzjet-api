@@ -6,44 +6,47 @@ use App\Models\Booking;
 use App\Models\Package;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class BookingController extends Controller
 {
-    public function bookPackage(Request $request)
+    public function index()
     {
-        $request->validate([
-            'package_id' => 'required|exists:packages,id',
-            'img' => 'required|file|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        $bookings = Booking::with(['user', 'package'])->latest()->paginate(10);
+        return view('pages.admin.booking.index', compact('bookings'));
+    }
 
-        $package = Package::find($request->package_id);
+    public function show(Booking $booking)
+    {
+        return view('pages.admin.booking.show', compact('booking'));
+    }
 
-        // Handle file upload
-        if ($request->hasFile('img')) {
-            $file = $request->file('img');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('public/booking_images', $filename);
-            $imgPath = Storage::url($path);
+    public function edit(Booking $booking)
+    {
+        // Load the relationships to display user and package details
+        $booking->load(['user', 'package']);
+        return view('pages.admin.booking.edit', compact('booking'));
+    }
+
+    public function update(Request $request, Booking $booking)
+    {
+        try {
+            $validated = $request->validate([
+                'status' => 'required|in:pending,confirmed,cancelled'
+            ]);
+
+            $booking->update($validated);
+
+            return redirect()
+                ->route('bookings.index')
+                ->with('success', 'Booking status updated successfully');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Failed to update booking status')
+                ->withInput();
         }
-
-        $booking = Booking::create([
-            'user_id' => Auth::id(),
-            'package_id' => $package->id,
-            'status' => 'pending',
-            'total_price' => $package->price,
-            'img' => $imgPath ?? null,
-        ]);
-
-        return response()->json([
-            'message' => 'Package booked successfully',
-            'booking' => $booking
-        ], 201);
     }
 
-    public function showBookings()
-    {
-        $bookings = Booking::with('user', 'package')->get();
-        return view('pages.booking.index', compact('bookings'));
-    }
+    // Store method is only used through the user's package booking flow
+    // Remove create/store from admin interface since bookings are only created by users
 }
