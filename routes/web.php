@@ -10,16 +10,19 @@ use App\Http\Controllers\DestinationController;
 use App\Http\Controllers\TransportationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BookingController;
-use App\Http\Controllers\AdminController;
+use Illuminate\Support\Facades\Auth;
 
-// Root redirect to dashboard
+// Root redirect to dashboard (update this to check role first)
 Route::get('/', function () {
-    return redirect()->route('dashboard.index');
+    if (Auth::user()->role === 'admin') {
+        return redirect()->route('dashboard.index');
+    }
+    return redirect()->route('home'); // You should create a home route for regular users
 })->middleware(['auth', 'verified']);
 
-// Dashboard route with controller
+// Dashboard route with controller (add role:admin middleware)
 Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'role:admin'])
     ->name('dashboard.index');
 
 // Profile routes
@@ -37,10 +40,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('transportations', TransportationController::class);
     Route::resource('locations', LocationController::class);
     Route::resource('packages', PackageController::class);
-
     Route::get('/bookings', [BookingController::class, 'showBookings']);
 });
-
 
 // Image handling route
 Route::get('/images/{folder}/{filename}', function ($folder, $filename) {
