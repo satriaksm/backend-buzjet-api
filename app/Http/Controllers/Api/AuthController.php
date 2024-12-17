@@ -34,8 +34,11 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password)
             ]);
 
-            $token = $user->createToken('auth_token')->plainTextToken;
+                
+    
 
+            $token = $user->createToken('auth_token')->plainTextToken;
+            
             return response()->json([
                 'status' => true,
                 'message' => 'User registered successfully',
