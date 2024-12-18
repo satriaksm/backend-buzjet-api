@@ -23,6 +23,7 @@
                 document.documentElement.classList.remove('dark');
             }
         </script>
+        @stack('scripts')  <!-- Add this if it doesn't exist -->
     </head>
     <body class="font-sans antialiased">
         <nav class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 fixed w-full z-20 top-0 start-0">

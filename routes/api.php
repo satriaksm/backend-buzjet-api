@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\DestinationController;
 use App\Http\Controllers\Api\TransportationController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\BookingController;
 
 // Public routes
 Route::post('login', [AuthController::class, 'login']);
@@ -34,6 +35,9 @@ Route::middleware('auth:sanctum')->group(function () {
         // Package routes except index and show
         Route::resource('/packages', PackageController::class)->except(['index', 'show']);
         Route::apiResource('users', UserController::class);
+        Route::patch('/bookings/{id}/status', [BookingController::class, 'updateStatus']);
     });
+
+    Route::apiResource('bookings', BookingController::class);
 });
 
