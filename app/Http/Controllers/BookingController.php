@@ -47,6 +47,28 @@ class BookingController extends Controller
         }
     }
 
+    public function store(Request $request)
+    {
+        try {
+            $package = Package::findOrFail($request->package_id);
+
+            $booking = Booking::create([
+                'user_id' => Auth::id(),
+                'package_id' => $package->id,
+                'total_price' => $package->price,
+                'status' => 'pending'
+            ]);
+
+            return redirect()
+                ->back()
+                ->with('success', 'Booking berhasil! Silahkan tunggu konfirmasi dari admin.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Gagal melakukan booking. Silahkan coba lagi.');
+        }
+    }
+
     // Store method is only used through the user's package booking flow
     // Remove create/store from admin interface since bookings are only created by users
 }
