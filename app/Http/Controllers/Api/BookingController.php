@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Package;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -23,6 +24,10 @@ class BookingController extends Controller
 
     public function store(Request $request)
     {
+        Log::info('Booking request received', [
+            'headers' => $request->headers->all(),
+            'data' => $request->all()
+        ]);
         $validator = Validator::make($request->all(), [
             'package_id' => 'required|exists:packages,id',
             'seats' => 'required|integer|min:1|max:10' // tambahkan max seats sesuai kebutuhan

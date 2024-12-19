@@ -20,8 +20,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // Routes for all authenticated users
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [AuthController::class, 'profile']);
+    Route::put('/users/{id}', [UserController::class, 'update']);
+    Route::apiResource('bookings', BookingController::class);
 
     // Routes only for viewing packages (both admin and regular users)
+
     Route::get('/packages', [PackageController::class, 'index']);
     Route::get('/packages/{id}', [PackageController::class, 'show']);
 
@@ -38,6 +41,5 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/bookings/{id}/status', [BookingController::class, 'updateStatus']);
     });
 
-    Route::apiResource('bookings', BookingController::class);
 });
 
