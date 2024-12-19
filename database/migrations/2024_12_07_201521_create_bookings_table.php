@@ -12,8 +12,8 @@ class CreateBookingsTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('package_id')->constrained('packages')->onDelete('cascade');
-            $table->string('status')->default('pending'); // pending, confirmed, cancelled
-            $table->integer('seats')->default(1);
+            $table->string('status')->default('pending');
+            $table->integer('seats')->default(1); // pending, confirmed, cancelled
             $table->decimal('total_price', 10, 2);
             $table->timestamps();
         });

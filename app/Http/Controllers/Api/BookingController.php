@@ -30,7 +30,7 @@ class BookingController extends Controller
         ]);
         $validator = Validator::make($request->all(), [
             'package_id' => 'required|exists:packages,id',
-            'seats' => 'required|integer|min:1|max:10' // tambahkan max seats sesuai kebutuhan
+            // 'seats' => 'required|integer|min:1|max:10' // tambahkan max seats sesuai kebutuhan
         ]);
 
         if ($validator->fails()) {

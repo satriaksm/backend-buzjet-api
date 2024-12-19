@@ -55,6 +55,7 @@ class BookingController extends Controller
             $booking = Booking::create([
                 'user_id' => Auth::id(),
                 'package_id' => $package->id,
+                'seats' =>$package->seats,
                 'total_price' => $package->price,
                 'status' => 'pending'
             ]);
